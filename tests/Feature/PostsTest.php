@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Post;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -39,5 +40,23 @@ class PostsTest extends TestCase
         $response = $this->get('/posts/' . $post->id);
 
         $response->assertSeeText('Mroczna tajemnica mordu w oborze długo spędzała sen z oczu policjantom z Lublina. Kto zabił 88-letnią kobietę i jej krowę?');
+    }
+
+    /** @test */
+    public function only_published_posts_are_shown_on_the_posts_index_view()
+    {
+        $publishedPost = factory(Post::class)->create([
+            'published_at' => Carbon::yesterday(),
+        ]);
+
+        $unpublishedPost = factory(Post::class)->create([
+            'published_at' => Carbon::tomorrow(),
+        ]);
+
+        $response = $this->get('/posts');
+
+        $response->assertStatus(200)
+            ->assertSeeText($publishedPost->title)
+            ->assertDontSeeText($unpublishedPost->title);
     }
 }
