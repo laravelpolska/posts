@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Post;
+use Illuminate\Http\Request;
 
 class PostController extends Controller
 {
@@ -11,6 +12,15 @@ class PostController extends Controller
         $posts = Post::published()->get();
 
         return view('posts.index')->with('posts', $posts);
+    }
+
+    public function store(Request $request)
+    {
+        Post::create($request->only([
+            'published_at',
+            'title',
+            'body',
+        ]));
     }
 
     public function show(Post $post)
