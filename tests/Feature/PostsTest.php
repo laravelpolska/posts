@@ -79,4 +79,12 @@ class PostsTest extends TestCase
             'body' => 'Miał pomóc żonie, a skończyło się tragedią.',
         ]);
     }
+
+    /** @test */
+    public function guests_cannot_create_posts()
+    {
+        $response = $this->post('/posts', []);
+
+        $response->assertRedirect('/login');
+    }
 }
