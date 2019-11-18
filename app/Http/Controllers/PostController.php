@@ -16,7 +16,7 @@ class PostController extends Controller
 
     public function store(Request $request)
     {
-        Post::create($request->only([
+        $request->user()->posts()->create($request->only([
             'published_at',
             'title',
             'body',
