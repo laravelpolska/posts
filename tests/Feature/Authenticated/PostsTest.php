@@ -69,4 +69,24 @@ class PostsTest extends AuthenticatedTestCase
 
         $response->assertSessionHasErrors('body');
     }
+
+    /** @test */
+    public function the_published_at_is_not_required()
+    {
+        $response = $this->post('/posts', [
+            'published_at' => null,
+        ]);
+
+        $response->assertSessionDoesntHaveErrors('published_at');
+    }
+
+    /** @test */
+    public function the_published_at_must_be_a_valid_date()
+    {
+        $response = $this->post('/posts', [
+            'published_at' => 'NOT-A-DATE-STRING',
+        ]);
+
+        $response->assertSessionHasErrors('published_at');
+    }
 }

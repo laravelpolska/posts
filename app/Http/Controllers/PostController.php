@@ -26,6 +26,10 @@ class PostController extends Controller
                 'nullable',
                 'min:3',
             ],
+            'published_at' => [
+                'nullable',
+                'date',
+            ],
         ]);
 
         $request->user()->posts()->create($request->only([
