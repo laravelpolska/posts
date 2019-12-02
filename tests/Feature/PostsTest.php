@@ -3,7 +3,6 @@
 namespace Tests\Feature;
 
 use App\Post;
-use App\User;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -62,56 +61,10 @@ class PostsTest extends TestCase
     }
 
     /** @test */
-    public function a_post_can_be_created()
-    {
-        $user = factory(User::class)->create();
-
-        $this->actingAs($user)->post('/posts', [
-            'published_at' => '2019-11-19 12:00:00',
-            'title' => 'Odebrał żelazko zamiast telefonu',
-            'body' => 'Miał pomóc żonie, a skończyło się tragedią.',
-        ]);
-
-        $this->assertDatabaseHas('posts', [
-            'user_id' => $user->id,
-            'published_at' => '2019-11-19 12:00:00',
-            'title' => 'Odebrał żelazko zamiast telefonu',
-            'body' => 'Miał pomóc żonie, a skończyło się tragedią.',
-        ]);
-    }
-
-    /** @test */
     public function guests_cannot_create_posts()
     {
         $response = $this->post('/posts', []);
 
         $response->assertRedirect('/login');
-    }
-
-    /** @test */
-    public function the_title_field_is_required()
-    {
-        $user = factory(User::class)->create();
-
-        $response = $this->actingAs($user)->post('/posts', [
-            'title' => null,
-        ]);
-
-        $response->assertSessionHasErrors('title');
-    }
-
-    /** @test */
-    public function the_title_field_must_be_unique()
-    {
-        $user = factory(User::class)->create();
-        $existingPost = factory(Post::class)->create([
-            'title' => 'Wrabiał krowę w morderstwo cioci',
-        ]);
-
-        $response = $this->actingAs($user)->post('/posts', [
-            'title' => 'Wrabiał krowę w morderstwo cioci',
-        ]);
-
-        $response->assertSessionHasErrors('title');
     }
 }
