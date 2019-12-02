@@ -87,4 +87,31 @@ class PostsTest extends TestCase
 
         $response->assertRedirect('/login');
     }
+
+    /** @test */
+    public function the_title_field_is_required()
+    {
+        $user = factory(User::class)->create();
+
+        $response = $this->actingAs($user)->post('/posts', [
+            'title' => null,
+        ]);
+
+        $response->assertSessionHasErrors('title');
+    }
+
+    /** @test */
+    public function the_title_field_must_be_unique()
+    {
+        $user = factory(User::class)->create();
+        $existingPost = factory(Post::class)->create([
+            'title' => 'Wrabiał krowę w morderstwo cioci',
+        ]);
+
+        $response = $this->actingAs($user)->post('/posts', [
+            'title' => 'Wrabiał krowę w morderstwo cioci',
+        ]);
+
+        $response->assertSessionHasErrors('title');
+    }
 }

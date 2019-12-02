@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Post;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class PostController extends Controller
 {
@@ -16,6 +17,13 @@ class PostController extends Controller
 
     public function store(Request $request)
     {
+        $request->validate([
+            'title' => [
+                'required',
+                Rule::unique('posts'),
+            ],
+        ]);
+
         $request->user()->posts()->create($request->only([
             'published_at',
             'title',
