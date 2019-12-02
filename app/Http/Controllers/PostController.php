@@ -22,6 +22,10 @@ class PostController extends Controller
                 'required',
                 Rule::unique('posts'),
             ],
+            'body' => [
+                'nullable',
+                'min:3',
+            ],
         ]);
 
         $request->user()->posts()->create($request->only([

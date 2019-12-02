@@ -49,4 +49,24 @@ class PostsTest extends AuthenticatedTestCase
 
         $response->assertSessionHasErrors('title');
     }
+
+    /** @test */
+    public function the_body_is_not_required()
+    {
+        $response = $this->post('/posts', [
+            'body' => null,
+        ]);
+
+        $response->assertSessionDoesntHaveErrors('body');
+    }
+
+    /** @test */
+    public function the_body_must_be_at_least_3_characters()
+    {
+        $response = $this->post('/posts', [
+            'body' => 'aa',
+        ]);
+
+        $response->assertSessionHasErrors('body');
+    }
 }
