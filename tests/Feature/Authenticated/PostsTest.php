@@ -89,4 +89,23 @@ class PostsTest extends AuthenticatedTestCase
 
         $response->assertSessionHasErrors('published_at');
     }
+
+    /** @test */
+    public function a_post_can_be_updated()
+    {
+        $post = factory(Post::class)->create();
+
+        $this->patch("/posts/{$post->id}" , [
+            'published_at' => '2019-11-19 12:00:00',
+            'title' => 'Odebrał żelazko zamiast telefonu',
+            'body' => 'Miał pomóc żonie, a skończyło się tragedią.',
+        ]);
+
+        $this->assertDatabaseHas('posts', [
+            'id' => $post->id,
+            'published_at' => '2019-11-19 12:00:00',
+            'title' => 'Odebrał żelazko zamiast telefonu',
+            'body' => 'Miał pomóc żonie, a skończyło się tragedią.',
+        ]);
+    }
 }

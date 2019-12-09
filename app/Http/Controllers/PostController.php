@@ -43,4 +43,13 @@ class PostController extends Controller
     {
         return view('posts.show')->with('post', $post);
     }
+
+    public function update(Request $request, Post $post)
+    {
+        $post->update($request->only([
+            'published_at',
+            'title',
+            'body',
+        ]));
+    }
 }

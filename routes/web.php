@@ -20,6 +20,7 @@ Route::get('/posts/{post}', 'PostController@show');
 
 Route::middleware('auth')->group(function () {
     Route::post('/posts', 'PostController@store');
+    Route::patch('/posts/{post}', 'PostController@update');
 });
 
 Auth::routes();
