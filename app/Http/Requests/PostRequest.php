@@ -17,7 +17,7 @@ class PostRequest extends FormRequest
         return [
             'title' => [
                 'required',
-                Rule::unique('posts'),
+                $this->route('post') ? Rule::unique('posts')->ignoreModel($this->route('post')) : Rule::unique('posts'),
             ],
             'body' => [
                 'nullable',

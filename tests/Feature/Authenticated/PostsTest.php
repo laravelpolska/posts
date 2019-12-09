@@ -137,6 +137,20 @@ class PostsTest extends AuthenticatedTestCase
     }
 
     /** @test */
+    public function the_current_title_is_ignored_for_the_unique_check_on_update()
+    {
+        $post = factory(Post::class)->create([
+            'title' => 'Wrabiał krowę w morderstwo cioci',
+        ]);
+
+        $response = $this->patch("/posts/{$post->id}", [
+            'title' => 'Wrabiał krowę w morderstwo cioci',
+        ]);
+
+        $response->assertSessionHasNoErrors('title');
+    }
+
+    /** @test */
     public function the_body_is_not_required_on_update()
     {
         $post = factory(Post::class)->create();
