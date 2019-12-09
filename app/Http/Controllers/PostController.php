@@ -46,6 +46,21 @@ class PostController extends Controller
 
     public function update(Request $request, Post $post)
     {
+        $request->validate([
+            'title' => [
+                'required',
+                Rule::unique('posts'),
+            ],
+            'body' => [
+                'nullable',
+                'min:3',
+            ],
+            'published_at' => [
+                'nullable',
+                'date',
+            ],
+        ]);
+
         $post->update($request->only([
             'published_at',
             'title',
