@@ -2,9 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\PostRequest;
 use App\Post;
-use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
 
 class PostController extends Controller
 {
@@ -15,23 +14,8 @@ class PostController extends Controller
         return view('posts.index')->with('posts', $posts);
     }
 
-    public function store(Request $request)
+    public function store(PostRequest $request)
     {
-        $request->validate([
-            'title' => [
-                'required',
-                Rule::unique('posts'),
-            ],
-            'body' => [
-                'nullable',
-                'min:3',
-            ],
-            'published_at' => [
-                'nullable',
-                'date',
-            ],
-        ]);
-
         $request->user()->posts()->create($request->only([
             'published_at',
             'title',
@@ -44,23 +28,8 @@ class PostController extends Controller
         return view('posts.show')->with('post', $post);
     }
 
-    public function update(Request $request, Post $post)
+    public function update(PostRequest $request, Post $post)
     {
-        $request->validate([
-            'title' => [
-                'required',
-                Rule::unique('posts'),
-            ],
-            'body' => [
-                'nullable',
-                'min:3',
-            ],
-            'published_at' => [
-                'nullable',
-                'date',
-            ],
-        ]);
-
         $post->update($request->only([
             'published_at',
             'title',
