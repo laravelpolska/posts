@@ -197,4 +197,16 @@ class PostsTest extends AuthenticatedTestCase
 
         $response->assertSessionHasErrors('published_at');
     }
+
+    /** @test */
+    public function a_post_can_be_deleted()
+    {
+        $post = factory(Post::class)->create();
+
+        $this->delete("/posts/{$post->id}");
+
+        $this->assertDatabaseMissing('posts', [
+            'id' => $post->id,
+        ]);
+    }
 }

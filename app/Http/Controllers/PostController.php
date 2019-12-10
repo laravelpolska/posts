@@ -36,4 +36,9 @@ class PostController extends Controller
             'body',
         ]));
     }
+
+    public function destroy(Post $post)
+    {
+        $post->delete();
+    }
 }
