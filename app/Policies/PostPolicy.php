@@ -14,4 +14,9 @@ class PostPolicy
     {
         return $user->id === $post->user_id;
     }
+
+    public function delete(User $user, Post $post): bool
+    {
+        return $user->isAdmin();
+    }
 }

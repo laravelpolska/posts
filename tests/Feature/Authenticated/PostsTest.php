@@ -221,14 +221,30 @@ class PostsTest extends AuthenticatedTestCase
     }
 
     /** @test */
-    public function a_post_can_be_deleted()
+    public function admin_can_delete_posts()
     {
+        $admin = factory(User::class)->create([
+            'email' => 'admin@example.com',
+        ]);
         $post = factory(Post::class)->create();
 
-        $this->delete("/posts/{$post->id}");
+        $this->actingAs($admin)->delete("/posts/{$post->id}");
 
         $this->assertDatabaseMissing('posts', [
             'id' => $post->id,
         ]);
+    }
+
+    /** @test */
+    public function non_admin_users_cannot_delete_posts()
+    {
+        $user = factory(User::class)->create([
+            'email' => 'user@example.com',
+        ]);
+        $post = factory(Post::class)->create();
+
+        $response = $this->actingAs($user)->delete("/posts/{$post->id}");
+
+        $response->assertForbidden();
     }
 }
