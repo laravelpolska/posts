@@ -3,6 +3,7 @@
 namespace Tests\Feature\Authenticated;
 
 use App\Post;
+use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class PostsTest extends AuthenticatedTestCase
@@ -91,11 +92,14 @@ class PostsTest extends AuthenticatedTestCase
     }
 
     /** @test */
-    public function a_post_can_be_updated()
+    public function a_user_can_update_their_own_posts()
     {
-        $post = factory(Post::class)->create();
+        $fred = factory(User::class)->create();
+        $post = factory(Post::class)->create([
+            'user_id' => $fred->id,
+        ]);
 
-        $this->patch("/posts/{$post->id}" , [
+        $this->actingAs($fred)->patch("/posts/{$post->id}" , [
             'published_at' => '2019-11-19 12:00:00',
             'title' => 'Odebrał żelazko zamiast telefonu',
             'body' => 'Miał pomóc żonie, a skończyło się tragedią.',
@@ -107,6 +111,24 @@ class PostsTest extends AuthenticatedTestCase
             'title' => 'Odebrał żelazko zamiast telefonu',
             'body' => 'Miał pomóc żonie, a skończyło się tragedią.',
         ]);
+    }
+
+    /** @test */
+    public function a_user_cannot_update_other_users_posts()
+    {
+        $fred = factory(User::class)->create();
+        $barney = factory(User::class)->create();
+        $post = factory(Post::class)->create([
+            'user_id' => $fred->id,
+        ]);
+
+        $response = $this->actingAs($barney)->patch("/posts/{$post->id}" , [
+            'published_at' => '2019-11-19 12:00:00',
+            'title' => 'Odebrał żelazko zamiast telefonu',
+            'body' => 'Miał pomóc żonie, a skończyło się tragedią.',
+        ]);
+
+        $response->assertForbidden();
     }
 
     /** @test */
